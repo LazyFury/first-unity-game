@@ -1,0 +1,8 @@
+.vs/
+.vscode/
+logs/
+packages-lock.json
+build/
+Library/
+/obj/debug
+Temp/
