@@ -12,6 +12,7 @@ public class Level : ScriptableObject
     public static string level1 = "Level1";
     public static string setting = "Setting";
     public static string about = "About";
+    public static string archive = "Archive";
 }
 
 public static class LoadLevel
@@ -40,6 +41,7 @@ public static class LoadLevel
 public class LevelManager : MonoBehaviour
 {
 
+    public Levels.Levels levels;
     public UnityEvent onFadeIn;
     public UnityEvent onFadeOut;
 
@@ -79,9 +81,30 @@ public class LevelManager : MonoBehaviour
         currentLevel = level;
         needLoading = withLoading;
         animator.SetTrigger("fadeOut");
-
     }
 
+
+    public void loadLevel()
+    {
+        loadLevel(levels.currentLevel);
+    }
+    public void loadLevel(int i)
+    {
+        levels.currentLevel = i;
+        currentLevel = levels.scenes[i].sceneName;
+        needLoading = true;
+        animator.SetTrigger("fadeOut");
+    }
+
+    public void nextLevel()
+    {
+        var i = levels.currentLevel + 1;
+        if (i > levels.scenes.Length - 1)
+        {
+            return;
+        }
+        loadLevel(i);
+    }
     public void triggerfadeOut()
     {
         currentLevel = "";

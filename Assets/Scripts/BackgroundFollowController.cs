@@ -26,7 +26,6 @@ public class BackgroundFollowController : MonoBehaviour
             }
             target = (follow.transform.position - followLastPosition) * speed;
             followLastPosition = follow.transform.position;
-            print(target);
         }
     }
     // Update is called once per frame

@@ -22,7 +22,7 @@ public class DelayAnimation : MonoBehaviour
         foreach (var item in targets)
         {
             yield return new WaitForSeconds(delay);
-            if (item != null)
+            if (item != null && item.isActiveAndEnabled)
             {
                 item.SetTrigger(trigger);
             }

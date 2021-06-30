@@ -2516,7 +2516,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabs: {fileID: 7361364423154179499}
-  label: continue
+  label: next level
   padding:
     m_Left: 40
     m_Right: 40
@@ -3764,7 +3764,7 @@ PrefabInstance:
     - target: {fileID: 572546105369240505, guid: 0affd6ff919e6439a9f4697b160cc647,
         type: 3}
       propertyPath: m_text
-      value: continue
+      value: next level
       objectReference: {fileID: 0}
     - target: {fileID: 572546105369240506, guid: 0affd6ff919e6439a9f4697b160cc647,
         type: 3}
@@ -3834,7 +3834,7 @@ PrefabInstance:
     - target: {fileID: 572546105491319656, guid: 0affd6ff919e6439a9f4697b160cc647,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 196.36
+      value: 210.25
       objectReference: {fileID: 0}
     - target: {fileID: 572546105491319656, guid: 0affd6ff919e6439a9f4697b160cc647,
         type: 3}

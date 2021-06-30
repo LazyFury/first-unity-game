@@ -13,7 +13,7 @@ public class LoadingUIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        text.text = "90%";
+        text.text = "0%";
         StartCoroutine(loadScene());
     }
 
