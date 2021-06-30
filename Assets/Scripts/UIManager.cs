@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour
         {
             continueBtn.SetActive(true);
             continueBtn.GetComponent<ButtonAutoSetting>().label = "continue " + GameManager.archives.currentKey;
-            continueBtn.GetComponentInChildren<Animator>().SetTrigger("fadeIn");
+            // continueBtn.GetComponentInChildren<Animator>().SetTrigger("Show");
         }
     }
     public void Exit()

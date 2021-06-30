@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u5B58\u6863"
   m_EditorClassIdentifier: 
   archiveName: default
-  maxHealthy: 6
+  maxHealthy: 5
   healthy: 5
   level: 0
   score: 10

@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class CheckPointController : MonoBehaviour
 {
 
-    public LevelManager levelManager;
+    public UnityEvent OnPlayerTriggerCheckPoint;
     // Start is called before the first frame update
     void Start()
     {
-        levelManager = FindObjectOfType<LevelManager>();
     }
 
     // Update is called once per frame
@@ -22,7 +21,7 @@ public class CheckPointController : MonoBehaviour
     {
         if (other.gameObject.CompareTag(nameof(GameManager.Tag.Player)))
         {
-            LoadLevel.loadTo(Level.launch);
+            OnPlayerTriggerCheckPoint?.Invoke();
         }
     }
 

@@ -6,18 +6,21 @@ public class HealthyManager : MonoBehaviour
 {
     public int MaxHealthy = 5;
     [SerializeField]
-    private int Healthy = 5;
+    private int _healthy = 5;
     //when use code set healthy, update ui
     public int healthy
     {
-        get { return Healthy; }
+        get { return _healthy; }
         set
         {
-            Healthy = value;
-            _UpdateHealthy();
+            if (value > MaxHealthy) return;
+            _healthy = value;
+            _UpdateHealthyUI();
+            onChange?.Invoke(value);
         }
     }
-
+    public delegate void OnChange(int i);
+    public OnChange onChange;
 
     [SerializeField]
     private GameObject heartPrefabs;
@@ -35,7 +38,7 @@ public class HealthyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateHealthy();
+        //3 UpdateHealthy();
     }
 
     public void HealthyUp(int _healthy)
@@ -47,11 +50,11 @@ public class HealthyManager : MonoBehaviour
 
     private void UpdateHealthy()
     {
-        healthy = Healthy;
+        healthy = _healthy;
     }
 
 
-    private void _UpdateHealthy()
+    private void _UpdateHealthyUI()
     {
         var len = ParentTarget.transform.childCount;
         for (int i = 0; i < len; i++)
@@ -59,7 +62,7 @@ public class HealthyManager : MonoBehaviour
             HreatItem hreatItem = ParentTarget.transform.GetChild(i).gameObject.GetComponent<HreatItem>();
             if (hreatItem != null)
             {
-                if (i < Healthy)
+                if (i < _healthy)
                 {
                     hreatItem.status = HreatItem.Status.Live;
                 }

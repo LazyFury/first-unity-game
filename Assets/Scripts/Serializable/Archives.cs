@@ -47,7 +47,7 @@ public class Archives : ScriptableObject
             var str = PlayerPrefs.GetString(key);
             try
             {
-                Console.WriteLine(str);
+                Debug.Log(str);
                 JsonUtility.FromJsonOverwrite(str, this);
             }
             catch (Exception e)
@@ -92,11 +92,13 @@ public class ArchivesList
     {
         get
         {
+            var list = keys;
+            list.Reverse();
             if (index > keys.Count - 1)
             {
                 return "";
             }
-            return keys[index] ?? "";
+            return list[index] ?? "";
         }
     }
 
@@ -111,7 +113,7 @@ public class ArchivesList
     public Archives newArchive(Archives def, string key)
     {
         Debug.Log(key);
-        var newArchive = archive(def);
+        var newArchive = UnityEngine.Object.Instantiate<Archives>(def);
         newArchive.save(this, key);
         return newArchive.load(key);
     }
@@ -182,11 +184,14 @@ public class ArchivesList
         if (index > -1)
         {
             list[index] = key;
+            this.index = index;
         }
         else
         {
             list.Add(key);
+            this.index = list.Count - 1;
         }
+
         save(list);
     }
 

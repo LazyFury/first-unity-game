@@ -1,57 +1,87 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+using System;
+
 public class GameManager : MonoBehaviour
 {
 
     public enum Tag
     {
         Player,
-        Enemy
+        Enemy,
+        rewards
     }
     public static ArchivesList archives = new ArchivesList();
     public Archives defArchive;
 
-    private Archives _archive;
-    public Archives archive
-    {
-        get
-        {
-            if (_archive == null)
-            {
-                _archive = archives.archive(defArchive);
-            }
-            return _archive;
-        }
-    }
+    public Archives archive;
     public HealthyManager healthyManager;
     public LevelManager levelManager;
+    public ScoreManager scoreManager;
+    public PlayerController player;
     public bool init = false;
+    public UnityEvent DeathEvent;
 
     // Start is called before the first frame update
-    private void Init()
+    private void Start()
     {
-
-        getHealthyAndUpdate();
+        healthyManager = GameObject.FindObjectOfType<HealthyManager>();
         levelManager = GameObject.FindObjectOfType<LevelManager>();
-        levelManager.levels.currentLevel = archive.level;
-        levelManager.levels.onLevelChange += updateLevel;
+        scoreManager = GameManager.FindObjectOfType<ScoreManager>();
+        player = GameManager.FindObjectOfType<PlayerController>();
+        DeathEvent.AddListener(onDeath);
+        if (init)
+        {
+            archive = archives.archive(defArchive);
+            getHealthyAndUpdate();
+            if (levelManager != null)
+            {
+                getLevelAntUpdate();
+                levelManager.levels.onLevelChange += updateLevel;
+            }
+        }
+    }
 
+    private void getLevelAntUpdate()
+    {
+        levelManager.levels.currentLevel = archive.level;
     }
 
     private void getHealthyAndUpdate()
     {
-        healthyManager = GameObject.FindObjectOfType<HealthyManager>();
         if (healthyManager != null)
         {
             healthyManager.MaxHealthy = archive.maxHealthy;
             healthyManager.healthy = archive.healthy;
+            healthyManager.onChange += onHealthyChange;
             healthyManager.UpdateMaxHealthy();
         }
     }
 
+    void onDeath()
+    {
+        Debug.Log("u are die.");
+        player.death();
+    }
+
+    void onHealthyChange(int i)
+    {
+        if (i <= 0)
+        {
+            DeathEvent?.Invoke();
+        }
+    }
     void updateLevel(int i)
     {
         archive.level = i;
+        if (i > archive.level)
+        {
+            //升级
+            archive.maxHealthy++;
+            archive.healthy = archive.maxHealthy;
+            archive.score = scoreManager.score;
+        }
         Save();
     }
     void Save()
@@ -61,7 +91,8 @@ public class GameManager : MonoBehaviour
 
     public void newArchive()
     {
-        _archive = archives.newArchive(defArchive, System.DateTime.Now.ToString());
+        archive = archives.newArchive(defArchive, System.DateTime.Now.ToString());
+        getLevelAntUpdate();
     }
 
     public void allArchives()

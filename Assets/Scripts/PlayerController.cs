@@ -30,7 +30,14 @@ public class PlayerController : MonoBehaviour
 
     private Cinemachine.CinemachineCollisionImpulseSource MyInpulse;
     private bool canMove = true;
+    public bool isDeath = false;
 
+    public GameManager gameManager;
+
+    public AudioClip deathAudio;
+    public AudioClip jumpAudio;
+    public AudioClip rewardsAudio;
+    public AudioSource audioPlayer;
     void Start()
     {
         resetJumpCount();
@@ -38,6 +45,9 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         MyInpulse = GetComponent<Cinemachine.CinemachineCollisionImpulseSource>();
+        // audioPlayer = GetComponent<AudioSource>();
+
+        gameManager = FindObjectOfType<GameManager>();
 
     }
     private void OnDestroy()
@@ -48,15 +58,24 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
+        if (isDeath) return;
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRudias, whatIsGround);
         checkJump();
         checkMove();
         updateFace();
         animator.SetBool("onGrounded", isGrounded);
 
+        checkFallingToDeath();
+
     }
 
-
+    private void checkFallingToDeath()
+    {
+        if (transform.position.y < -20)
+        {
+            gameManager.DeathEvent?.Invoke();
+        }
+    }
 
     private void updateFace()
     {
@@ -90,6 +109,7 @@ public class PlayerController : MonoBehaviour
                 _particle.transform.SetParent(null);
                 Destroy(_particle, 1f);
             }
+            audioPlayer.PlayOneShot(jumpAudio);
         }
 
     }
@@ -149,14 +169,33 @@ public class PlayerController : MonoBehaviour
             transform.Translate(new Vector3(x, 0.05f, 0), Space.World);
             animator.SetFloat("speed", 0);
             MyInpulse.GenerateImpulse();
-            // StartCoroutine(unLockCanMove());
+
+            audioPlayer.PlayOneShot(jumpAudio);
+        }
+
+
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        //for now
+        if (other.gameObject.CompareTag(nameof(GameManager.Tag.rewards)))
+        {
+            audioPlayer.PlayOneShot(rewardsAudio);
         }
     }
 
-    IEnumerator unLockCanMove()
+    public void death()
     {
-        yield return new WaitForSeconds(1f);
-        canMove = true;
+        GetComponent<Collider2D>().enabled = false;
+        audioPlayer.PlayOneShot(deathAudio);
+        isDeath = true;
+        StartCoroutine(frezon());
     }
 
+    private IEnumerator frezon()
+    {
+        yield return new WaitForSeconds(1f);
+        gameObject.SetActive(false);
+    }
 }
